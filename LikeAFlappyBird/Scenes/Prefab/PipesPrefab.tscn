@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://dkeyihk06ie5m"]
+
+[ext_resource type="Script" path="res://Scripts/PipesPrefab.cs" id="1_i8t1x"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dxoom"]
+size = Vector2(100, 600)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_c20c0"]
+size = Vector2(100, 600)
+orientation = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o1jdg"]
+size = Vector2(100, 320)
+
+[node name="PipesPrefab" type="Node2D" node_paths=PackedStringArray("Trigger")]
+position = Vector2(1720, 448)
+script = ExtResource("1_i8t1x")
+Speed = 500
+Trigger = NodePath("Trigger")
+
+[node name="BottomPipe" type="StaticBody2D" parent="."]
+light_mask = 4
+position = Vector2(0, 460)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomPipe"]
+light_mask = 4
+shape = SubResource("RectangleShape2D_dxoom")
+
+[node name="BottomPipeMesh" type="MeshInstance2D" parent="BottomPipe"]
+mesh = SubResource("PlaneMesh_c20c0")
+
+[node name="BottomPipe2" type="StaticBody2D" parent="."]
+position = Vector2(0, -460)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomPipe2"]
+shape = SubResource("RectangleShape2D_dxoom")
+
+[node name="BottomPipeMesh" type="MeshInstance2D" parent="BottomPipe2"]
+mesh = SubResource("PlaneMesh_c20c0")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+rect = Rect2(-60, -800, 120, 1600)
+
+[node name="Trigger" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Trigger"]
+position = Vector2(112, 0)
+shape = SubResource("RectangleShape2D_o1jdg")
+
+[connection signal="tree_entered" from="BottomPipe/CollisionShape2D" to="." method="_on_collision_shape_2d_tree_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
+[connection signal="body_exited" from="Trigger" to="." method="_on_area_2d_body_exited"]

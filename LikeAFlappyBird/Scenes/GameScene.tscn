@@ -1,0 +1,151 @@
+[gd_scene load_steps=15 format=3 uid="uid://blusty5kel5h6"]
+
+[ext_resource type="Script" path="res://Scripts/GameScene.cs" id="1_e6ll2"]
+[ext_resource type="Script" path="res://Scripts/Bird.cs" id="3_negml"]
+[ext_resource type="Texture2D" uid="uid://cp151hdbiymas" path="res://Materials/frame-1.png" id="4_0bkjm"]
+[ext_resource type="Texture2D" uid="uid://dqdpgvtt4w6qj" path="res://Materials/frame-2.png" id="5_3poxn"]
+[ext_resource type="PackedScene" uid="uid://dkeyihk06ie5m" path="res://Scenes/Prefab/PipesPrefab.tscn" id="5_wdd61"]
+[ext_resource type="Script" path="res://Scripts/GroundMove.cs" id="6_hnuye"]
+[ext_resource type="Texture2D" uid="uid://b83ikntqnd4cv" path="res://Materials/ground1.png" id="7_x1dak"]
+[ext_resource type="Texture2D" uid="uid://bk8ytpb25n7co" path="res://Materials/City Foreground.png" id="8_ig2jp"]
+[ext_resource type="Texture2D" uid="uid://bi73ootps8t7g" path="res://Materials/City Background.png" id="9_qdmij"]
+[ext_resource type="Texture2D" uid="uid://bj7fe1ayn5qc7" path="res://Materials/Space-Free-Download-PNG.png" id="12_05ydr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v4a7w"]
+size = Vector2(1728, 74)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kfnim"]
+radius = 40.0
+height = 112.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hgm57"]
+animations = [{
+"frames": [{
+"duration": 0.7,
+"texture": ExtResource("4_0bkjm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_3poxn")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_3oxxj"]
+font_size = 50
+
+[node name="GameScene" type="Node2D" node_paths=PackedStringArray("pipesPrefab", "timer", "ScoreLabel")]
+script = ExtResource("1_e6ll2")
+pipesPrefab = NodePath("CanvasLayer/PipesPrefab")
+timer = NodePath("CanvasLayer/PipesTimer")
+ScoreLabel = NodePath("ScoreLabel")
+
+[node name="Ground" type="ParallaxBackground" parent="." groups=["parallax_layers"]]
+layer = 2
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Ground" node_paths=PackedStringArray("Layer")]
+z_index = 100
+motion_mirroring = Vector2(1728, 0)
+script = ExtResource("6_hnuye")
+Speed = 500.0
+Layer = NodePath(".")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Ground/ParallaxLayer"]
+z_index = 100
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground/ParallaxLayer/StaticBody2D"]
+z_index = 100
+position = Vector2(800, 840)
+shape = SubResource("RectangleShape2D_v4a7w")
+
+[node name="Ground3" type="Sprite2D" parent="Ground/ParallaxLayer/StaticBody2D"]
+z_index = 100
+position = Vector2(800, 864)
+scale = Vector2(0.503643, 0.28626)
+texture = ExtResource("7_x1dak")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="." groups=["parallax_layers"]]
+layer = -2
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground" node_paths=PackedStringArray("Layer")]
+z_index = -800
+motion_mirroring = Vector2(1600, 0)
+script = ExtResource("6_hnuye")
+Speed = 10.0
+Layer = NodePath(".")
+
+[node name="Space-free-download-png" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+z_index = -800
+position = Vector2(800, 420)
+scale = Vector2(2.22222, 1.75)
+texture = ExtResource("12_05ydr")
+
+[node name="BGs_Far" type="ParallaxLayer" parent="ParallaxBackground" node_paths=PackedStringArray("Layer")]
+z_index = -500
+motion_mirroring = Vector2(1728, 0)
+script = ExtResource("6_hnuye")
+Speed = 200.0
+Layer = NodePath(".")
+
+[node name="CityBackground" type="Sprite2D" parent="ParallaxBackground/BGs_Far"]
+modulate = Color(1, 0.478431, 1, 1)
+z_index = -2
+position = Vector2(800, 336)
+scale = Vector2(1.54286, 1)
+texture = ExtResource("9_qdmij")
+
+[node name="BGs_Near" type="ParallaxLayer" parent="ParallaxBackground" node_paths=PackedStringArray("Layer")]
+light_mask = 0
+z_index = -400
+motion_mirroring = Vector2(1728, 0)
+script = ExtResource("6_hnuye")
+Speed = 300.0
+Layer = NodePath(".")
+
+[node name="CityForeground" type="Sprite2D" parent="ParallaxBackground/BGs_Near"]
+modulate = Color(0.529412, 0, 1, 1)
+z_index = 100
+position = Vector2(800, 448)
+scale = Vector2(1.54286, 1)
+texture = ExtResource("8_ig2jp")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Bird" type="CharacterBody2D" parent="CanvasLayer"]
+z_index = 100
+position = Vector2(472, 304)
+script = ExtResource("3_negml")
+Gravity = 20
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/Bird"]
+z_index = 101
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_kfnim")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CanvasLayer/Bird"]
+z_index = 101
+position = Vector2(-16, 0)
+scale = Vector2(0.196203, 0.196203)
+sprite_frames = SubResource("SpriteFrames_hgm57")
+autoplay = "default"
+frame = 1
+frame_progress = 0.323068
+
+[node name="PipesPrefab" parent="CanvasLayer" node_paths=PackedStringArray("BirdPlayer", "ScoreLabel") instance=ExtResource("5_wdd61")]
+z_index = -2
+BirdPlayer = NodePath("../Bird")
+ScoreLabel = NodePath("../../ScoreLabel")
+
+[node name="PipesTimer" type="Timer" parent="CanvasLayer"]
+
+[node name="ScoreLabel" type="Label" parent="."]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 249.0
+offset_bottom = 133.0
+text = "Scores: "
+label_settings = SubResource("LabelSettings_3oxxj")
+
+[connection signal="Pause" from="." to="." method="_on_pause"]
+[connection signal="timeout" from="CanvasLayer/PipesTimer" to="." method="_on_timer_timeout"]
